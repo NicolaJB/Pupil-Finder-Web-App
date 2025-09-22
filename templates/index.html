@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pupil Finder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f8; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { color: #2c3e50; margin: 0; }
+        img.logo { max-width: 150px; }
+
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select, button { margin-top: 5px; padding: 8px; font-size: 14px; }
+        button { background-color: #3498db; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #2980b9; }
+
+        .results { margin-top: 30px; padding: 15px; border: 1px solid #ccc; background: #fff; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h3 { margin-top: 0; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #ecf0f1; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #d6eaf8; }
+        .highlight { background-color: #f1c40f !important; color: #2c3e50; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .form-actions { margin-top: 15px; }
+    </style>
+    <script>
+        // Clear form inputs and results
+        function clearForm() {
+            document.getElementById("pupil_name").value = "";
+            document.getElementById("day").selectedIndex = 0;
+            const resultsDiv = document.querySelector(".results");
+            if (resultsDiv) resultsDiv.innerHTML = "";
+        }
+    </script>
+</head>
+<body>
+    <!-- Header with title on left, logo on right -->
+    <div class="header">
+        <h1>Pupil Finder: Locate Your Pupil in the School</h1>
+        <img class="logo" src="{{ url_for('static', filename='images/avenue_house.gif') }}" alt="School Logo">
+    </div>
+
+    <!-- Search Form -->
+    <form method="POST">
+        <label for="pupil_name">Enter pupil's full name:</label>
+        <input type="text" name="pupil_name" id="pupil_name" value="{{ pupil_name }}" required placeholder="e.g., Alice Smith">
+
+        <label for="day">Select timetable day:</label>
+        <select name="day" id="day">
+            {% for day in days %}
+            <option value="{{ day }}" {% if day == selected_day %}selected{% endif %}>{{ day }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="form-actions">
+            <button type="submit">Find Location</button>
+            <button type="button" onclick="clearForm()" style="background-color:#95a5a6;">New Search</button>
+        </div>
+    </form>
+
+    <!-- Results Section -->
+    {% if results %}
+    <div class="results">
+        {% if results[0].get('error') %}
+            <p class="error">{{ results[0]['error'] }}</p>
+        {% else %}
+            <!-- Student name and year above table -->
+            <h3>Pupil: {{ pupil_name }} | Year: {{ results[0].year }}</h3>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Subject</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in results %}
+                    <tr class="{% if r.current %}highlight{% endif %}">
+                        <td>{{ r.session }}</td>
+                        <td>{{ r.subject }}</td>
+                        <td>{{ r.start }}</td>
+                        <td>{{ r.end }}</td>
+                        <td>{{ r.location }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
