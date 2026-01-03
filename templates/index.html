@@ -24,12 +24,24 @@
         .highlight { background-color: #f1c40f !important; color: #2c3e50; font-weight: bold; }
         .error { color: red; font-weight: bold; }
         .form-actions { margin-top: 15px; }
+
+        /* New styles for session filter info */
+        .info-note {
+            background-color: #e8f4f8;
+            padding: 10px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #2c3e50;
+        }
     </style>
     <script>
         // Clear form inputs and results
         function clearForm() {
             document.getElementById("pupil_name").value = "";
             document.getElementById("day").selectedIndex = 0;
+            document.getElementById("session").selectedIndex = 0;
             const resultsDiv = document.querySelector(".results");
             if (resultsDiv) resultsDiv.innerHTML = "";
         }
@@ -54,6 +66,18 @@
             {% endfor %}
         </select>
 
+        <label for="session">Filter by session (optional):</label>
+        <select name="session" id="session">
+            <option value="All" {% if not selected_session or selected_session == 'All' %}selected{% endif %}>All Sessions</option>
+            {% for session in session_options %}
+            <option value="{{ session }}" {% if session == selected_session %}selected{% endif %}>Session {{ session }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="info-note">
+            <strong>Tip:</strong> Current sessions are highlighted in yellow. Select "All Sessions" to view the full timetable, or choose a specific session to filter results.
+        </div>
+
         <div class="form-actions">
             <button type="submit">Find Location</button>
             <button type="button" onclick="clearForm()" style="background-color:#95a5a6;">New Search</button>
@@ -67,7 +91,12 @@
             <p class="error">{{ results[0]['error'] }}</p>
         {% else %}
             <!-- Student name and year above table -->
-            <h3>Pupil: {{ pupil_name }} | Year: {{ results[0].year }}</h3>
+            <h3>
+                Pupil: {{ pupil_name }} | Year: {{ results[0].year }} | Day: {{ selected_day }}
+                {% if selected_session and selected_session != 'All' %}
+                | Session: {{ selected_session }}
+                {% endif %}
+            </h3>
 
             <table>
                 <thead>
@@ -82,7 +111,7 @@
                 <tbody>
                     {% for r in results %}
                     <tr class="{% if r.current %}highlight{% endif %}">
-                        <td>{{ r.session }}</td>
+                        <td>{{ r.session }}{% if r.current %} <strong>(NOW)</strong>{% endif %}</td>
                         <td>{{ r.subject }}</td>
                         <td>{{ r.start }}</td>
                         <td>{{ r.end }}</td>

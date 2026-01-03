@@ -51,6 +51,12 @@ def get_start_times(timetable):
     return times
 
 
+# Extract all unique sessions for dropdown
+def get_sessions(timetable):
+    sessions = sorted({row[3] for row in timetable if len(row) > 3}, key=lambda x: int(x) if x.isdigit() else 0)
+    return sessions
+
+
 # Check if current system time is within a session
 def is_current_session(start_time, end_time):
     try:
@@ -60,11 +66,15 @@ def is_current_session(start_time, end_time):
         return False
 
 
-# Locate pupil for the day, mark current sessions
-def locate_pupil_by_time(pupil_name, pupil_year, timetable, day):
+# Locate pupil for the day, mark current sessions, filter by session if specified
+def locate_pupil_by_time(pupil_name, pupil_year, timetable, day, filter_session=None):
     results = []
     for each in timetable:
         if len(each) > 5 and each[0] == pupil_year:
+            # If filter_session is specified, only include matching sessions
+            if filter_session and each[3] != filter_session:
+                continue
+
             result = {
                 "day": day,
                 "name": pupil_name,
@@ -79,7 +89,10 @@ def locate_pupil_by_time(pupil_name, pupil_year, timetable, day):
             results.append(result)
 
     if not results:
-        results.append({"error": f"No pupil sessions found on {day}."})
+        if filter_session:
+            results.append({"error": f"No session {filter_session} found for this pupil on {day}."})
+        else:
+            results.append({"error": f"No pupil sessions found on {day}."})
 
     return results
 
@@ -96,28 +109,35 @@ def get_current_weekday():
 def index():
     pupils = load_pupils()
     selected_day = get_current_weekday()
+    selected_session = ""  # Default to show all sessions
     pupil_name = ""
     results = []
 
     if request.method == "POST":
         pupil_name = request.form.get("pupil_name", "").strip()
         selected_day = request.form.get("day", selected_day)
+        selected_session = request.form.get("session", "")
 
     pupil_year = pupils.get(pupil_name)
     timetable = get_timetable(selected_day)
 
     if pupil_year:
-        results = locate_pupil_by_time(pupil_name, pupil_year, timetable, selected_day)
+        # Pass filter_session only if a specific session is selected
+        filter_session = selected_session if selected_session and selected_session != "All" else None
+        results = locate_pupil_by_time(pupil_name, pupil_year, timetable, selected_day, filter_session)
 
     time_options = get_start_times(timetable)
+    session_options = get_sessions(timetable)
 
     return render_template(
         "index.html",
         days=DAYS,
         results=results,
         selected_day=selected_day,
+        selected_session=selected_session,
         pupil_name=pupil_name,
-        time_options=time_options
+        time_options=time_options,
+        session_options=session_options
     )
 
 
