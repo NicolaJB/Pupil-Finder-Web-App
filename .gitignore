@@ -6,13 +6,20 @@
 # Python files
 __pycache__/
 *.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
 
 # Virtual environment (if any)
 venv/
 env/
 *.egg-info/
+.env
+*.log
 
 # IDE / Editor files
 *.idea/
 *.vscode/
 *.swp
+
