@@ -197,5 +197,19 @@ curl http://localhost:5000/health
 - Maximum session number is 11 (configurable via CSV).
 - Ensure all CSV files are present in the root folder for correct functionality.
 
+## Deployment / Live Demo
+
+The Pupil Finder Web App is deployed online via multiple cloud platforms:
+
+- **Azure Web App:** [Access here](https://pupil-finder-azure-e5cne3bxfdf3h5c7.germanywestcentral-01.azurewebsites.net/)
+
+— deployed via GitHub Actions using `gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120`.
+
+- **Render Web App:** [Access here](https://pupil-finder.onrender.com/)
+
+ — configured for production with Gunicorn and Python 3.11.
+
+Both deployments use a production-grade Gunicorn server, demonstrating cloud-ready Python/Flask application design with CI/CD and scalable hosting.
+
 ## License
 This project is licensed under the MIT License.
