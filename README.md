@@ -220,7 +220,6 @@ To try the app, enter any of the following sample pupil names in the search box.
 - Claire Hanley
 - Daniel Morris
 - Christopher Millar
-- Priya D'Souza
 - Emily Whitaker
 - Anaya Nair
 - Lily Nakamura
