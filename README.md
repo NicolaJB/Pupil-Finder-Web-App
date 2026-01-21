@@ -211,5 +211,32 @@ The Pupil Finder Web App is deployed online via multiple cloud platforms:
 
 Both deployments use a production-grade Gunicorn server, demonstrating cloud-ready Python/Flask application design with CI/CD and scalable hosting.
 
+### Demo Class Names
+
+To try the app, enter any of the following sample pupil names in the search box.  
+
+> **Note:** All demonstration pupil names are fictitious and do not correspond to real individuals.
+
+- Claire Hanley
+- Daniel Morris
+- Christopher Millar
+- Priya D'Souza
+- Emily Whitaker
+- Anaya Nair
+- Lily Nakamura
+- Samira Hayes
+- Tariq Mensah
+- Ethan Daniels
+- Julian Harris
+- Thomas Reid
+- Obi Okonkwo
+- Omar Almasri
+- Haruto Fujita
+- Reika Tanaka
+- Takeshi Nomura
+- Henry Callaghan
+- Ryan Pembroke
+
+
 ## License
 This project is licensed under the MIT License.
