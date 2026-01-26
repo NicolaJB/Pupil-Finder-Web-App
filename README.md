@@ -95,6 +95,10 @@ json{
 **New Search**
 - Click "New Search" to clear the form and start over
 
+## Demo User Interface
+
+![Pupil Finder User Interface](pupil-finder-user-interface-example.png)
+
 ### CSV Data Format
 
 **ClassData.csv**
